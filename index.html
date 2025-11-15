@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Victornz — Beranda</title>
+  <link rel="stylesheet" href="list.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" role="banner">
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="sidebar">☰</button>
+  <div class="brand-title">Beranda</div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar" role="navigation" aria-label="Main navigation">
+  <div>
+    <div class="logo">
+      <img src="logo.png" alt="Victornz logo" onerror="this.style.display='none'">
+      <strong>Victornz</strong>
+    </div>
+
+    <nav id="menuNav">
+      <a href="#" class="menu-item active" data-page="home">🏠 Beranda</a>
+      <a href="#" class="menu-item" data-page="rules">📘 Rules</a>
+      <a href="#" class="menu-item" data-page="list">🧾 List Member</a>
+      <a href="#" class="menu-item" data-page="fotbar">📷 Fotbar</a>
+      <a href="#" class="menu-item" data-page="build">🧱 Hasil Build</a>
+      <a href="#" class="menu-item" data-page="skin">👕 Pasang Skin</a>
+      <a href="#" class="menu-item" data-page="saran">💬 Saran</a>
+    </nav>
+  </div>
+
+  <div class="footer">© 2025 Victornz</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="mainContent" tabindex="-1">
+  <!-- HOME -->
+  <section id="page-home" class="page card">
+    <h1 class="title">Selamat Datang!</h1>
+    <p class="lead">Halo teman-teman, ini halaman beranda Victornz. Di sini terdapat ringkasan, gamer tag, dan tombol untuk mendaftar.</p>
+
+    <h3>Gamer Tag :</h3>
+    <div class="gamer-list" id="gamerList">
+      <div class="gamer-item">Elrumi19</div>
+      <div class="gamer-item">frexymax</div>
+      <div class="gamer-item">AsaaNiBozz</div>
+      <div class="gamer-item">Christian252010</div>
+    </div>
+
+    <p class="lead">Team ini awalnya didirikan untuk mencari teman di server ProwNetwork. Semoga kalian betah!</p>
+
+    <div style="text-align:center; margin-top:18px">
+      <button class="card cta" id="ctaForm">Silahkan Isi Link Form Ini</button>
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section id="page-rules" class="page card" style="display:none">
+    <h1 class="title small">Rules</h1>
+    <p class="lead">Aturan server / tim ditampilkan di sini.</p>
+  </section>
+
+  <!-- LIST MEMBER -->
+  <section id="page-list" class="page card" style="display:none">
+    <h1 class="title small">List Member</h1>
+    <p class="lead">Daftar member diambil dari Google Sheet (GViz). Pastikan SHEET_ID &amp; GID benar dan sheet dapat diakses.</p>
+
+    <div style="margin:8px 0 12px;">
+      <label for="searchLocal">Cari Player:</label>
+      <input id="searchLocal" placeholder="Cari nama..." class="input-search">
+    </div>
+
+    <div id="playerList" class="player-list"></div>
+  </section>
+
+  <!-- FOTBAR -->
+  <section id="page-fotbar" class="page card" style="display:none">
+    <h1 class="title small">Fotbar</h1>
+    <p>Galeri foto & thumbnail.</p>
+  </section>
+
+  <!-- BUILD -->
+  <section id="page-build" class="page card" style="display:none">
+    <h1 class="title small">Hasil Build</h1>
+    <p>Proyek build tim.</p>
+  </section>
+
+  <!-- SKIN -->
+  <section id="page-skin" class="page card" style="display:none">
+    <h1 class="title small">Pasang Skin</h1>
+    <p>Halaman untuk menggunggah/memasang skin (link atau instruksi).</p>
+  </section>
+
+  <!-- SARAN -->
+  <section id="page-saran" class="page card" style="display:none">
+    <h1 class="title small">Saran</h1>
+    <p>Form saran atau link ke Google Form.</p>
+  </section>
+</main>
+
+<!-- Player overlay (hidden) -->
+<div id="overlay" class="overlay" aria-hidden="true" style="display:none">
+  <div class="panel" role="dialog" aria-modal="true">
+    <button class="close" id="closeOverlay">✕</button>
+    <h2 id="ovName">Player</h2>
+    <div style="display:flex; gap:16px; align-items:flex-start; margin-top:10px">
+      <canvas id="ovCanvas" width="64" height="128" style="border-radius:8px; border:0"></canvas>
+      <div>
+        <p><strong>Discord:</strong> <span id="ovDiscord">-</span></p>
+        <p><strong>Rank:</strong> <span id="ovRank">-</span></p>
+        <p><strong>Role:</strong> <span id="ovRole">-</span></p>
+        <p><strong>Zona:</strong> <span id="ovTZ">-</span></p>
+      </div>
+    </div>
+    <p id="ovAbout" style="margin-top:12px;color:#444"></p>
+  </div>
+</div>
+
+<script src="listplayer.js"></script>
+</body>
+</html>
