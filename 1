@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Victornz — Beranda</title>
+<style>
+  /* ---------- Basic reset ---------- */
+  :root{
+    --yellow:#f7b500;
+    --dark:#1f1f1f;
+    --bg:#fffbea;
+    --card:#fff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg);
+    color:#222;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    min-height:100vh;
+  }
+
+  /* ---------- Header ---------- */
+  .header{
+    position:fixed; top:0; left:0; right:0;
+    height:56px; background:var(--yellow); color:#fff;
+    display:flex; align-items:center; gap:12px; padding:0 18px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.12); z-index:30;
+  }
+  .menu-btn{
+    width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+    font-size:22px; cursor:pointer; user-select:none;
+  }
+  .brand-title{ font-weight:700; font-size:20px; }
+
+  /* ---------- Layout ---------- */
+  .container{
+    display:flex;
+    padding-top:76px; /* header height + spacing */
+    gap:20px;
+    align-items:flex-start;
+    justify-content:center;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    position:fixed; top:56px; left:-240px; width:240px; height:calc(100% - 56px);
+    background:var(--dark); color:#fff; padding-top:10px;
+    transition:left .28s cubic-bezier(.2,.9,.3,1); z-index:25;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .sidebar.active{ left:0; box-shadow:3px 0 18px rgba(0,0,0,0.3); }
+  .sidebar .logo{
+    display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .sidebar .logo img{ width:36px; height:36px; border-radius:8px; object-fit:cover; }
+  .sidebar nav{ padding:12px 0; display:flex; flex-direction:column; gap:6px; }
+  .sidebar a.menu-item{
+    display:flex; align-items:center; gap:12px; padding:12px 18px; color:#eaeaea;
+    text-decoration:none; font-weight:600; border-left:4px solid transparent; transition:all .18s;
+    font-size:15px;
+  }
+  .sidebar a.menu-item:hover{ background:#2b2b2b; transform:translateX(6px); color:var(--yellow); }
+  .sidebar a.menu-item.active{ background:#2b2b2b; color:var(--yellow); border-left-color:var(--yellow); }
+
+  .sidebar .footer{ padding:16px 18px; font-size:12px; color:#aaa; border-top:1px solid rgba(255,255,255,0.03); }
+
+  /* ---------- Content area ---------- */
+  .main{
+    width:720px; max-width:92vw; margin:0 auto;
+  }
+  .card{
+    background:var(--card); border-radius:12px; padding:28px; box-shadow:0 6px 20px rgba(0,0,0,0.08);
+  }
+
+  h1.title{ color:var(--yellow); text-align:center; margin:18px 0 16px; font-family: "Minecraft", sans-serif; font-size:36px; }
+  p.lead{ color:#444; line-height:1.6; }
+
+  /* gamer tags list */
+  .gamer-list{ display:flex; flex-direction:column; gap:12px; margin:18px 0; }
+  .gamer-item{
+    background:#fbe7a8; border-radius:8px; padding:12px 18px; text-align:center; font-weight:700; color:#222;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06); cursor:pointer;
+  }
+
+  /* List Member table (fetched from sheet) */
+  .player-list{ display:flex; flex-direction:column; gap:12px; margin-top:6px; }
+  .player-row{ display:flex; gap:12px; align-items:center; padding:8px 12px; background:#fff8e6; border-radius:10px; border:1px solid #f2c94c; cursor:pointer; }
+  .player-name{ font-weight:700; flex:1; }
+  canvas.head{ width:48px; height:48px; border-radius:6px; border:2px solid var(--yellow); image-rendering:pixelated; }
+
+  /* overlay for player detail */
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:flex-start; justify-content:center; padding-top:48px; z-index:40; }
+  .overlay .panel{ background:var(--card); width:90%; max-width:820px; border-radius:12px; padding:20px; box-shadow:0 8px 36px rgba(0,0,0,0.4); position:relative; }
+  .overlay .close{ position:absolute; right:12px; top:12px; background:var(--yellow); border:none; padding:6px 10px; border-radius:6px; cursor:pointer; color:#fff; font-weight:700; }
+
+  /* responsive */
+  @media (max-width:900px){
+    .sidebar{ width:200px; left:-200px; }
+    .sidebar.active{ left:0; }
+    .main{ width:92vw; }
+  }
+  @media (max-width:600px){
+    .header{ padding:0 12px; }
+    .brand-title{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" role="banner">
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="sidebar">☰</button>
+  <div class="brand-title">Beranda</div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar" role="navigation" aria-label="Main navigation">
+  <div>
+    <div class="logo">
+      <img src="logo.png" alt="Victornz logo" onerror="this.style.display='none'">
+      <strong>Victornz</strong>
+    </div>
+
+    <nav id="menuNav">
+      <a href="#" class="menu-item active" data-page="home">🏠 Beranda</a>
+      <a href="#" class="menu-item" data-page="rules">📘 Rules</a>
+      <a href="#" class="menu-item" data-page="list">🧾 List Member</a>
+      <a href="#" class="menu-item" data-page="fotbar">📷 Fotbar</a>
+      <a href="#" class="menu-item" data-page="build">🧱 Hasil Build</a>
+      <a href="#" class="menu-item" data-page="skin">👕 Pasang Skin</a>
+      <a href="#" class="menu-item" data-page="saran">💬 Saran</a>
+    </nav>
+  </div>
+
+  <div class="footer">© 2025 Victornz</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="mainContent" tabindex="-1">
+  <!-- HOME -->
+  <section id="page-home" class="page card">
+    <h1 class="title">Selamat Datang!</h1>
+    <p class="lead">Halo teman-teman, ini halaman beranda Victornz. Di sini terdapat ringkasan, gamer tag, dan tombol untuk mendaftar.</p>
+
+    <h3>Gamer Tag :</h3>
+    <div class="gamer-list" id="gamerList">
+      <div class="gamer-item">Elrumi19</div>
+      <div class="gamer-item">frexymax</div>
+      <div class="gamer-item">AsaaNiBozz</div>
+      <div class="gamer-item">Christian252010</div>
+    </div>
+
+    <p class="lead">Team ini awalnya didirikan untuk mencari teman di server ProwNetwork. Semoga kalian betah!</p>
+
+    <div style="text-align:center; margin-top:18px">
+      <button class="card" id="ctaForm" style="display:inline-block; background:var(--yellow); color:#fff; border:none; padding:12px 18px; border-radius:8px; cursor:pointer; font-weight:700;">Silahkan Isi Link Form Ini</button>
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section id="page-rules" class="page card" style="display:none">
+    <h1 class="title" style="font-size:28px; text-align:left">Rules</h1>
+    <p class="lead">Aturan server / tim ditampilkan di sini. Kamu bisa isi aturan lewat Google Sheet atau edit manual.</p>
+  </section>
+
+  <!-- LIST MEMBER -->
+  <section id="page-list" class="page card" style="display:none">
+    <h1 class="title" style="font-size:28px; text-align:left">List Member</h1>
+    <p class="lead">Daftar member diambil dari Google Sheet (public). Jika belum muncul, pastikan SHEET_ID & GID benar.</p>
+
+    <div>
+      <label for="searchLocal">Cari Player:</label>
+      <input id="searchLocal" placeholder="Cari nama..." style="padding:8px 10px; border-radius:6px; border:1px solid #f0d48a; margin-left:8px">
+    </div>
+
+    <div id="playerList" class="player-list" style="margin-top:12px">
+      <!-- rows akan diisi oleh JS -->
+    </div>
+  </section>
+
+  <!-- other pages -->
+  <section id="page-fotbar" class="page card" style="display:none">
+    <h1 class="title" style="font-size:28px; text-align:left">Fotbar</h1>
+    <p>Galeri foto & thumbnail.</p>
+  </section>
+
+  <section id="page-build" class="page card" style="display:none">
+    <h1 class="title" style="font-size:28px; text-align:left">Hasil Build</h1>
+    <p>Proyek build tim.</p>
+  </section>
+
+  <section id="page-skin" class="page card" style="display:none">
+    <h1 class="title" style="font-size:28px; text-align:left">Pasang Skin</h1>
+    <p>Halaman untuk menggunggah/memasang skin (link atau instruksi).</p>
+  </section>
+
+  <section id="page-saran" class="page card" style="display:none">
+    <h1 class="title" style="font-size:28px; text-align:left">Saran</h1>
+    <p>Form saran atau link ke Google Form.</p>
+  </section>
+</main>
+
+<!-- Player overlay (hidden) -->
+<div id="overlay" class="overlay" style="display:none" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true">
+    <button class="close" id="closeOverlay">✕</button>
+    <h2 id="ovName">Player</h2>
+    <div style="display:flex; gap:16px; align-items:flex-start; margin-top:10px">
+      <canvas id="ovCanvas" width="64" height="128" style="border-radius:8px; border:0"></canvas>
+      <div>
+        <p><strong>Discord:</strong> <span id="ovDiscord">-</span></p>
+        <p><strong>Rank:</strong> <span id="ovRank">-</span></p>
+        <p><strong>Role:</strong> <span id="ovRole">-</span></p>
+        <p><strong>Zona:</strong> <span id="ovTZ">-</span></p>
+      </div>
+    </div>
+    <p id="ovAbout" style="margin-top:12px;color:#444"></p>
+  </div>
+</div>
+
+<script>
+/* ---------------- Config Google Sheet (ubah sesuai sheet-mu) ---------------- */
+const SHEET_ID = "1JytAOIy_fz_Ip41UMyNwssyIL0Nnxq7Xsu7aGQGIa_I"; // ganti
+const GID = "941265557"; // ganti
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+
+/* ---------------- DOM refs ---------------- */
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const menuItems = document.querySelectorAll('.menu-item');
+const pages = document.querySelectorAll('.page');
+const mainContent = document.getElementById('mainContent');
+
+const playerListEl = document.getElementById('playerList');
+const searchLocal = document.getElementById('searchLocal');
+
+const overlay = document.getElementById('overlay');
+const closeOverlayBtn = document.getElementById('closeOverlay');
+const ovCanvas = document.getElementById('ovCanvas');
+const ovName = document.getElementById('ovName');
+const ovDiscord = document.getElementById('ovDiscord');
+const ovRank = document.getElementById('ovRank');
+const ovRole = document.getElementById('ovRole');
+const ovTZ = document.getElementById('ovTZ');
+const ovAbout = document.getElementById('ovAbout');
+
+let PLAYERS = {}; // object keyed by id
+
+/* ---------------- Sidebar toggle & navigation ---------------- */
+menuBtn.addEventListener('click', ()=> {
+  const open = sidebar.classList.toggle('active');
+  menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+document.addEventListener('click', (e) => {
+  if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) sidebar.classList.remove('active');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    sidebar.classList.remove('active');
+    hideOverlay();
+  }
+});
+
+// menu click
+menuItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    const page = item.dataset.page;
+    // set active
+    menuItems.forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+    // update header title
+    document.querySelector('.brand-title').textContent = item.textContent.trim();
+    // show page
+    pages.forEach(p => p.style.display = p.id === 'page-' + page ? 'block' : 'none');
+    // focus main for accessibility
+    mainContent.focus();
+    // close sidebar on small screens
+    if (window.innerWidth < 900) sidebar.classList.remove('active');
+  });
+});
+
+/* ---------------- Parse GViz (Google Sheets) response helpers ---------------- */
+function parseGvizResponse(text){
+  const jsonText = text.replace(/^[^\{]*/, '').replace(/\);?$/, '');
+  return JSON.parse(jsonText);
+}
+function tableToObjects(table){
+  const cols = table.cols.map(c => (c.label || c.id || '').toString().trim());
+  return table.rows.map(r => {
+    const obj = {};
+    r.c.forEach((cell,i) => { obj[cols[i] || `col${i}`] = (cell && cell.v !== undefined) ? cell.v : ''; });
+    return obj;
+  });
+}
+
+/* header mapping (sesuaikan header di sheet jika berbeda) */
+function mapRowToPlayer(row){
+  const get = (...names) => {
+    for (let n of names) {
+      for (let k of Object.keys(row)) {
+        if (k && k.toString().trim().toLowerCase() === n.toString().trim().toLowerCase()) return row[k];
+      }
+    } return '';
+  };
+  const name = get('Nama Minecraft','Nama','Name');
+  const discord = get('ID Discord','Discord','ID');
+  const rank = get('Rank','Rank mu','Rank mu di ProwNetwork');
+  const role = get('Role','Tugas');
+  const tz = get('Zona Waktu','Zona');
+  const about = get('Tentang','Tentang Dirimu');
+  const skin = get('Skin Minecraft','Skin');
+  const slim = get('Skin mu Mode Slim or Wide?','Skin mu Mode Slim') || '';
+  const isSlim = (''+slim).toLowerCase().includes('slim') || slim === true;
+  const id = name ? name.toString().replace(/\s+/g,'_').replace(/[^\w\-]/g,'').slice(0,24) : ('p'+Math.random().toString(36).slice(2,8));
+  return { id, name: name || id, discord:discord||'-', rank:rank||'-', role:role||'-', timezone:tz||'-', about:about||'-', skin:skin||'', isSlim:!!isSlim };
+}
+
+/* ---------------- Render player list ---------------- */
+function renderPlayers(players){
+  PLAYERS = players;
+  playerListEl.innerHTML = '';
+  Object.keys(players).forEach(id => {
+    const p = players[id];
+    const div = document.createElement('div');
+    div.className = 'player-row';
+    div.dataset.player = id;
+
+    const cnv = document.createElement('canvas');
+    cnv.className = 'head';
+    cnv.width = 64; cnv.height = 64; cnv.style.width='48px'; cnv.style.height='48px';
+
+    const name = document.createElement('div');
+    name.className = 'player-name';
+    name.textContent = p.name;
+
+    div.appendChild(cnv);
+    div.appendChild(name);
+
+    div.addEventListener('click', ()=> showOverlay(id));
+    playerListEl.appendChild(div);
+  });
+
+  drawAllHeads();
+}
+
+/* draw heads (tries to crop skin like Minecraft) */
+function drawAllHeads(){
+  const rows = playerListEl.querySelectorAll('.player-row');
+  rows.forEach(r => {
+    const pid = r.dataset.player;
+    const p = PLAYERS[pid];
+    const canvas = r.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if (!p.skin) {
+      drawFallback(ctx, p.name, canvas.width,canvas.height);
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin='anonymous';
+    img.src = p.skin;
+    img.onload = () => {
+      try {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 8,8,8,8, 0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 40,8,8,8, 0,0,canvas.width,canvas.height);
+      } catch(e){
+        ctx.drawImage(img, 0,0,canvas.width,canvas.height);
+      }
+    };
+    img.onerror = () => drawFallback(ctx,p.name,canvas.width,canvas.height);
+  });
+}
+function drawFallback(ctx,name,w,h){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#f0e7cf'; ctx.fillRect(0,0,w,h);
+  ctx.beginPath(); ctx.fillStyle='#d1c29a'; ctx.arc(w/2,h/2,Math.min(w,h)/2-6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#222'; ctx.font = `${Math.floor(w/2)}px Arial`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const initials = (name||'').split(' ').map(s=>s[0]).join('').slice(0,2).toUpperCase();
+  ctx.fillText(initials||'?', w/2, h/2);
+}
+
+/* ---------------- Overlay ---------------- */
+function showOverlay(id){
+  const p = PLAYERS[id]; if(!p) return;
+  ovName.textContent = p.name; ovDiscord.textContent = p.discord || '-'; ovRank.textContent = p.rank || '-';
+  ovRole.textContent = p.role || '-'; ovTZ.textContent = p.timezone || '-'; ovAbout.textContent = p.about || '-';
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden','false');
+  drawOverlaySkin(p);
+}
+function hideOverlay(){
+  overlay.style.display = 'none';
+  overlay.setAttribute('aria-hidden','true');
+}
+closeOverlayBtn.addEventListener('click', hideOverlay);
+overlay.addEventListener('click', (e)=> { if(e.target === overlay) hideOverlay(); });
+
+function drawOverlaySkin(p){
+  const ctx = ovCanvas.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.clearRect(0,0,ovCanvas.width,ovCanvas.height);
+  if (!p.skin) { drawFallback(ctx,p.name,ovCanvas.width,ovCanvas.height); return; }
+  const img = new Image(); img.crossOrigin='anonymous'; img.src = p.skin;
+  img.onload = () => {
+    try {
+      ctx.clearRect(0,0,ovCanvas.width,ovCanvas.height);
+      const scale = 2;
+      ctx.drawImage(img, 8,8,8,8, 8,0,8*scale,8*scale);
+      ctx.drawImage(img, 40,8,8,8, 8,0,8*scale,8*scale);
+    } catch(e){
+      ctx.drawImage(img,0,0,ovCanvas.width,ovCanvas.height);
+    }
+  };
+  img.onerror = () => drawFallback(ctx,p.name,ovCanvas.width,ovCanvas.height);
+}
+
+/* ---------------- Fetch sheet & init ---------------- */
+async function fetchSheet(){
+  try {
+    const res = await fetch(SHEET_URL);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    const json = parseGvizResponse(text);
+    const rows = tableToObjects(json.table);
+    const map = {};
+    rows.forEach(r => { const p = mapRowToPlayer(r); map[p.id]=p; });
+    renderPlayers(map);
+  } catch(err){
+    console.error('Load sheet failed',err);
+    playerListEl.innerHTML = '<div style="color:#c00">Gagal memuat data. Periksa SHEET_ID/GID dan akses publik.</div>';
+  }
+}
+
+/* search local */
+searchLocal?.addEventListener('input', e=>{
+  const q = (searchLocal.value||'').toLowerCase().trim();
+  document.querySelectorAll('.player-row').forEach(row=>{
+    const name = row.querySelector('.player-name').textContent.toLowerCase();
+    row.style.display = name.includes(q) ? 'flex' : 'none';
+  });
+});
+
+/* init */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // show home by default (menu already sets active)
+  fetchSheet();
+  // refresh every 2 minutes
+  setInterval(fetchSheet, 1000*60*2);
+});
+</script>
+</body>
+</html>
