@@ -3,123 +3,101 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Victornz — Beranda</title>
-  <link rel="stylesheet" href="list.css">
+  <title>Jasa Bimbingan & Marketplace — Victornz Services</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<!-- HEADER -->
-<header class="header" role="banner">
-  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="sidebar">☰</button>
-  <div class="brand-title">Beranda</div>
-</header>
-
-<!-- SIDEBAR -->
-<aside id="sidebar" class="sidebar" role="navigation" aria-label="Main navigation">
-  <div>
-    <div class="logo">
-      <img src="logo.png" alt="Victornz logo" onerror="this.style.display='none'">
-      <strong>Victornz</strong>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="brand">Victornz Services</div>
+      <nav class="nav">
+        <a href="#" data-page="home" class="nav-link active">Beranda</a>
+        <a href="#" data-page="services" class="nav-link">Layanan Bimbingan</a>
+        <a href="#" data-page="market" class="nav-link">Jual / Beli</a>
+        <a href="#" data-page="about" class="nav-link">Tentang</a>
+        <a href="#" data-page="contact" class="nav-link">Kontak</a>
+      </nav>
+      <button id="menuToggle" class="menu-toggle">☰</button>
     </div>
+  </header>
 
-    <nav id="menuNav">
-      <a href="#" class="menu-item active" data-page="home">🏠 Beranda</a>
-      <a href="#" class="menu-item" data-page="rules">📘 Rules</a>
-      <a href="#" class="menu-item" data-page="list">🧾 List Member</a>
-      <a href="#" class="menu-item" data-page="fotbar">📷 Fotbar</a>
-      <a href="#" class="menu-item" data-page="build">🧱 Hasil Build</a>
-      <a href="#" class="menu-item" data-page="skin">👕 Pasang Skin</a>
-      <a href="#" class="menu-item" data-page="saran">💬 Saran</a>
-    </nav>
-  </div>
+  <main class="wrap main">
+    <!-- HOME -->
+    <section id="page-home" class="page">
+      <h1>Solusi Belajar & Marketplace Aman</h1>
+      <p class="lead">Kami menyediakan bimbingan, proofreading, konsultasi tugas (bukan pengerjaan tugas), dan tempat jual/beli item digital & jasa legal.</p>
 
-  <div class="footer">© 2025 Victornz</div>
-</aside>
-
-<!-- MAIN CONTENT -->
-<main class="main" id="mainContent" tabindex="-1">
-  <!-- HOME -->
-  <section id="page-home" class="page card">
-    <h1 class="title">Selamat Datang!</h1>
-    <p class="lead">Halo teman-teman, ini halaman beranda Victornz. Di sini terdapat ringkasan, gamer tag, dan tombol untuk mendaftar.</p>
-
-    <h3>Gamer Tag :</h3>
-    <div class="gamer-list" id="gamerList">
-      <div class="gamer-item">Elrumi19</div>
-      <div class="gamer-item">frexymax</div>
-      <div class="gamer-item">AsaaNiBozz</div>
-      <div class="gamer-item">Christian252010</div>
-    </div>
-
-    <p class="lead">Team ini awalnya didirikan untuk mencari teman di server ProwNetwork. Semoga kalian betah!</p>
-
-    <div style="text-align:center; margin-top:18px">
-      <button class="card cta" id="ctaForm">Silahkan Isi Link Form Ini</button>
-    </div>
-  </section>
-
-  <!-- RULES -->
-  <section id="page-rules" class="page card" style="display:none">
-    <h1 class="title small">Rules</h1>
-    <p class="lead">Aturan server / tim ditampilkan di sini.</p>
-  </section>
-
-  <!-- LIST MEMBER -->
-  <section id="page-list" class="page card" style="display:none">
-    <h1 class="title small">List Member</h1>
-    <p class="lead">Daftar member diambil dari Google Sheet (GViz). Pastikan SHEET_ID &amp; GID benar dan sheet dapat diakses.</p>
-
-    <div style="margin:8px 0 12px;">
-      <label for="searchLocal">Cari Player:</label>
-      <input id="searchLocal" placeholder="Cari nama..." class="input-search">
-    </div>
-
-    <div id="playerList" class="player-list"></div>
-  </section>
-
-  <!-- FOTBAR -->
-  <section id="page-fotbar" class="page card" style="display:none">
-    <h1 class="title small">Fotbar</h1>
-    <p>Galeri foto & thumbnail.</p>
-  </section>
-
-  <!-- BUILD -->
-  <section id="page-build" class="page card" style="display:none">
-    <h1 class="title small">Hasil Build</h1>
-    <p>Proyek build tim.</p>
-  </section>
-
-  <!-- SKIN -->
-  <section id="page-skin" class="page card" style="display:none">
-    <h1 class="title small">Pasang Skin</h1>
-    <p>Halaman untuk menggunggah/memasang skin (link atau instruksi).</p>
-  </section>
-
-  <!-- SARAN -->
-  <section id="page-saran" class="page card" style="display:none">
-    <h1 class="title small">Saran</h1>
-    <p>Form saran atau link ke Google Form.</p>
-  </section>
-</main>
-
-<!-- Player overlay (hidden) -->
-<div id="overlay" class="overlay" aria-hidden="true" style="display:none">
-  <div class="panel" role="dialog" aria-modal="true">
-    <button class="close" id="closeOverlay">✕</button>
-    <h2 id="ovName">Player</h2>
-    <div style="display:flex; gap:16px; align-items:flex-start; margin-top:10px">
-      <canvas id="ovCanvas" width="64" height="128" style="border-radius:8px; border:0"></canvas>
-      <div>
-        <p><strong>Discord:</strong> <span id="ovDiscord">-</span></p>
-        <p><strong>Rank:</strong> <span id="ovRank">-</span></p>
-        <p><strong>Role:</strong> <span id="ovRole">-</span></p>
-        <p><strong>Zona:</strong> <span id="ovTZ">-</span></p>
+      <div class="cards">
+        <div class="card">
+          <h3>Bimbingan Belajar</h3>
+          <p>Kami bantu pahami materi, koreksi tugas, dan latihan — fokus ke pembelajaran.</p>
+          <button data-page="services" class="btn">Lihat Paket</button>
+        </div>
+        <div class="card">
+          <h3>Marketplace</h3>
+          <p>Jual/beli aset digital, template, atau order jasa sesuai kebijakan kami.</p>
+          <button data-page="market" class="btn">Jelajahi Produk</button>
+        </div>
+        <div class="card">
+          <h3>Pesan Konsultasi</h3>
+          <p>Booking sesi lewat form (Google Form) atau hubungi lewat email/wa.</p>
+          <button id="bookBtn" class="btn">Pesan Sekarang</button>
+        </div>
       </div>
-    </div>
-    <p id="ovAbout" style="margin-top:12px;color:#444"></p>
-  </div>
-</div>
+    </section>
 
-<script src="listplayer.js"></script>
+    <!-- SERVICES -->
+    <section id="page-services" class="page" style="display:none">
+      <h2>Paket Bimbingan</h2>
+      <p>Kami menyediakan paket bimbingan persiapan ujian, tutoring mingguan, dan proofreading laporan. Semua bersifat membantu belajar — tidak menerima pengerjaan tugas sepenuhnya.</p>
+
+      <div id="servicesList" class="list"></div>
+
+      <h3>Tambahkan Paket (Demo Admin)</h3>
+      <form id="addServiceForm" class="simple-form">
+        <input name="title" placeholder="Nama paket (mis: Tutoring 4x)" required>
+        <input name="price" placeholder="Harga (mis: 100000)" type="number" required>
+        <textarea name="desc" placeholder="Deskripsi singkat"></textarea>
+        <button type="submit" class="btn">Tambah Paket (Demo)</button>
+      </form>
+    </section>
+
+    <!-- MARKET -->
+    <section id="page-market" class="page" style="display:none">
+      <h2>Marketplace</h2>
+      <p>Daftar produk & jasa — transaksi dilakukan oleh penjual & pembeli. Kami menyediakan contact & instruksi pembayaran.</p>
+
+      <div id="productList" class="grid"></div>
+
+      <h3>Tambah Produk (Demo)</h3>
+      <form id="addProductForm" class="simple-form">
+        <input name="title" placeholder="Nama produk" required>
+        <input name="price" type="number" placeholder="Harga" required>
+        <input name="image" placeholder="URL gambar (opsional)">
+        <textarea name="desc" placeholder="Deskripsi"></textarea>
+        <button type="submit" class="btn">Tambah Produk (Demo)</button>
+      </form>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="page-about" class="page" style="display:none">
+      <h2>Tentang Kami</h2>
+      <p>Victornz Services — platform lokal untuk bimbingan & marketplace. Kami menolak layanan yang melanggar kebijakan pendidikan (mis. pengerjaan tugas tanpa pembelajaran).</p>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="page-contact" class="page" style="display:none">
+      <h2>Kontak</h2>
+      <p>Untuk pemesanan/kontrak: <strong><a href="mailto:contact@example.com">contact@example.com</a></strong></p>
+      <p>Atau isi form booking:</p>
+      <button id="openForm" class="btn">Buka Form Booking (Google Form)</button>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <small>© 2025 Victornz Services — Semua transaksi tunduk pada syarat & ketentuan.</small>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
